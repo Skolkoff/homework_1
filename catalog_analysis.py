@@ -83,6 +83,22 @@ def count_long_movies(movies, threshold=120):
             c += 1
     return c
 
+def normalize_title(title):
+    return " ".join(word[0].upper() + word[1:] for word in title.split())
+
+
+def make_slug(title):
+    return normalize_title(title).lower().replace(" ", "-")
+
+
+def format_report_line(movie):
+    genres = ", ".join(sorted(movie["genres"]))
+    return (
+        f'"{normalize_title(movie["title"])}" ({movie["year"]}) — '
+        f"{movie['rating']}/10, {duration_in_hours(movie['duration_min'])}, "
+        f"жанры: {genres}"
+    )
+
 if __name__ == "__main__":
     print("Этап 1")
     print("Средний рейтинг:", average_rating(movies))
@@ -107,3 +123,14 @@ if __name__ == "__main__":
     print("\nПервый шедевр в каталоге:")
     first_shedevr(movies)
     print("\nКоличество фильмов длиннее 120 минут:", count_long_movies(movies))
+
+    print("\nЭтап 4")
+    print("\nНормализованные названия фильмов:")
+    for movie in movies:
+        print(normalize_title(movie["title"]))
+    print("\nСлоги фильмов:")
+    for movie in movies:
+        print(make_slug(movie["title"]))
+    print("Отформатированные строки отчета:")
+    for movie in movies:
+        print(format_report_line(movie))
