@@ -99,6 +99,14 @@ def format_report_line(movie):
         f"жанры: {genres}"
     )
 
+def titles_sorted_by_rating(movies):
+    s = sorted(movies, key=lambda movie: movie["rating"], reverse=True)
+    return [movie["title"] for movie in s]
+
+def top_n_by_rating(movies, n=3):
+    s = sorted(movies, key=lambda movie: movie["rating"], reverse=True)
+    return [(movie["title"], movie["rating"]) for movie in s[: max(0, n)]]
+
 if __name__ == "__main__":
     print("Этап 1")
     print("Средний рейтинг:", average_rating(movies))
@@ -134,3 +142,12 @@ if __name__ == "__main__":
     print("Отформатированные строки отчета:")
     for movie in movies:
         print(format_report_line(movie))
+
+    print("\nЭтап 5")
+    print("Названия фильмов, отсортированные по рейтингу:")
+    for title in titles_sorted_by_rating(movies):
+        print(title)
+    print("\nТоп 3 фильма по рейтингу:")
+    for title, rating in top_n_by_rating(movies):
+        print(f"{title}: {rating}")
+    
