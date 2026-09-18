@@ -131,59 +131,81 @@ def ratings_above_average(movies):
         movie["title"]: movie["rating"] for movie in movies if movie["rating"] > average
     }
 
-if __name__ == "__main__":
-    print("Этап 1")
-    print("Средний рейтинг:", average_rating(movies))
+def all_genres(movies):
+    genres = set()
+    for movie in movies:
+        genres.update(movie["genres"])
+    return genres
+
+
+def common_actors(movie1, movie2):
+    return set(movie1["actors"]) & set(movie2["actors"])
+
+
+def genres_only_in_one(movies_a, movies_b):
+    return all_genres(movies_a) - all_genres(movies_b)
+
+
+def iter_high_rated(movies, min_rating=8.0):
+    for movie in movies:
+        if movie["rating"] >= min_rating:
+            yield movie
+
+def high_rated(movies):
+    for movie in iter_high_rated(movies):
+        print(format_report_line(movie))
+
+
+def total_duration(movies, rating_threshold=7):
+    return sum(movie["duration_min"] for movie in movies if movie["rating"] > rating_threshold)
+
+def build_report(movies):
+    print("ОТЧЁТ ПО КАТАЛОГУ")
+    print(f"\nСредний рейтинг {average_rating(movies)}")
     oldest, newest, average = catalog_age_stats(movies)
-    print(f"Самый старый фильм: {oldest} лет")
-    print(f"Самый новый фильм: {newest} лет")
     print(f"Средний возраст фильмов: {average} лет")
+    print(f"Возраст самого старого / нового фильма {oldest} / {newest} лет")
+    print(f"Фильмов длиннее 120 минут: {count_long_movies(movies)}")
+
+    print(f"\nСредний возраст фильмов: {average} лет")
     for movie in movies:
         print(f"{movie['title']} ({movie['year']}): {duration_in_hours(movie['duration_min'])}")
 
-    print("\nЭтап 2")
-    print("Рейтинги фильмов:")
-    for movie in movies:
-        print(f"{movie['title']}: {rating_tier(movie['rating'])}")
-    print("\nДесятилетия фильмов:")
-    for movie in movies:
-        print(f"{movie['title']}: {decade_label(movie['year'])}")
-
-    print("\nЭтап 3")
-    print("Фильмы не относящиеся к комедиям:")
-    no_comedi(movies)
-    print("\nПервый шедевр в каталоге:")
-    first_shedevr(movies)
-    print("\nКоличество фильмов длиннее 120 минут:", count_long_movies(movies))
-
-    print("\nЭтап 4")
-    print("\nНормализованные названия фильмов:")
-    for movie in movies:
-        print(normalize_title(movie["title"]))
-    print("\nСлоги фильмов:")
-    for movie in movies:
-        print(make_slug(movie["title"]))
-    print("Отформатированные строки отчета:")
-    for movie in movies:
-        print(format_report_line(movie))
-
-    print("\nЭтап 5")
-    print("Названия фильмов, отсортированные по рейтингу:")
-    for title in titles_sorted_by_rating(movies):
-        print(title)
-    print("\nТоп 3 фильма по рейтингу:")
+    print("\nТоп 3 фильма по рейтингу")
     for title, rating in top_n_by_rating(movies):
         print(f"{title}: {rating}")
 
-    print("\nЭтап 6")
-    print("Количество фильмов по жанрам:")
+    print("\nРейтинги фильмов")
+    for movie in movies:
+        print(f"{movie['title']}: {rating_tier(movie['rating'])}")
+    print("\nДесятилетия фильмов")
+    for movie in movies:
+        print(f"{movie['title']}: {decade_label(movie['year'])}")
+
+    print("\nКоличество фильмов по жанрам")
     for g, c in count_by_genre(movies).items():
         print(f"{g}: {c}")
 
-    print("\nФильмография актеров:")
+    print("\nФильмы без жанра comedy")
+    print(no_comedi(movies))
+    print("\nПервый шедевр в каталоге")
+    first_shedevr(movies)
+    print("\nФильмы с рейтингом не ниже 8.0:")
+    high_rated(movies)
+    print(
+        f"\nДлительность фильмов с рейтингом выше 7: "
+        f"{total_duration(movies)} мин"
+    )
+    print("\nФильмы с рейтингом выше среднего:")
+    for t, r in ratings_above_average(movies).items():
+        print(f"{t}: {r}")
+
+    print("\nФильмография актеров")
     for a, f in actor_filmography(movies).items():
         print(f"{a}: {', '.join(f)}")
 
-    print("\nРейтинги выше среднего:")
-    for t, r in ratings_above_average(movies).items():
-        print(f"{t}: {r}")
+    print("Все жанры в каталоге")
+    print(", ".join(sorted(all_genres(movies))))
+
+if __name__ == "__main__":
+    build_report(movies)
