@@ -107,6 +107,30 @@ def top_n_by_rating(movies, n=3):
     s = sorted(movies, key=lambda movie: movie["rating"], reverse=True)
     return [(movie["title"], movie["rating"]) for movie in s[: max(0, n)]]
 
+def count_by_genre(movies):
+    c = {}
+    for movie in movies:
+        for genre in movie["genres"]:
+            c[genre] = c.get(genre, 0) + 1
+    return c
+
+
+def actor_filmography(movies):
+    f = {}
+    for movie in movies:
+        for actor in movie["actors"]:
+            t = f.get(actor, [])
+            t.append(movie["title"])
+            f[actor] = t
+    return f
+
+
+def ratings_above_average(movies):
+    average = average_rating(movies)
+    return {
+        movie["title"]: movie["rating"] for movie in movies if movie["rating"] > average
+    }
+
 if __name__ == "__main__":
     print("Этап 1")
     print("Средний рейтинг:", average_rating(movies))
@@ -150,4 +174,16 @@ if __name__ == "__main__":
     print("\nТоп 3 фильма по рейтингу:")
     for title, rating in top_n_by_rating(movies):
         print(f"{title}: {rating}")
-    
+
+    print("\nЭтап 6")
+    print("Количество фильмов по жанрам:")
+    for g, c in count_by_genre(movies).items():
+        print(f"{g}: {c}")
+
+    print("\nФильмография актеров:")
+    for a, f in actor_filmography(movies).items():
+        print(f"{a}: {', '.join(f)}")
+
+    print("\nРейтинги выше среднего:")
+    for t, r in ratings_above_average(movies).items():
+        print(f"{t}: {r}")
