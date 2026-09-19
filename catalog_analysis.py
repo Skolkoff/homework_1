@@ -167,14 +167,14 @@ def build_report(movies):
     print(f"Самый новый фильм: {newest} лет")
     print(f"Средний возраст фильмов: {average} лет")
     for movie in movies:
-        print(f"{movie['title']} ({movie['year']}): {duration_in_hours(movie['duration_min'])}")
+        print(f" - {movie['title']} ({movie['year']}): {duration_in_hours(movie['duration_min'])}")
 
     print("\nРейтинги фильмов:")
     for movie in movies:
-        print(f"{movie['title']}: {rating_tier(movie['rating'])}")
+        print(f" - {movie['title']}: {rating_tier(movie['rating'])}")
     print("\nДесятилетия фильмов:")
     for movie in movies:
-        print(f"{movie['title']}: {decade_label(movie['year'])}")
+        print(f" - {movie['title']}: {decade_label(movie['year'])}")
 
     print("\nФильмы не относящиеся к комедиям:")
     no_comedi(movies)
@@ -182,7 +182,7 @@ def build_report(movies):
     first_shedevr(movies)
     print("\nКоличество фильмов длиннее 120 минут:", count_long_movies(movies))
 
-    print("\nНормализованные названия фильмов:")
+    print("\nНормализованные названия фильмов:\n")
     for movie in movies:
         print(normalize_title(movie["title"]))
     print("\nСлоги фильмов:")
@@ -214,7 +214,7 @@ def build_report(movies):
     print("\nВсе жанры в каталоге:")
     print(", ".join(sorted(all_genres(movies))))
     print("\nОбщие актеры между фильмами:")
-    print(common_actors(movies[0], movies[1]))
+    print(common_actors(movies[0], movies[3]))
     print("\nЖанры, которые есть только в одном из каталогов:")
     print(genres_only_in_one(movies[5:6], movies[:5]))
 
